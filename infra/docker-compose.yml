@@ -1,0 +1,61 @@
+name: controlla
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: controlla-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${DB_USER:-controlla}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-controlla}
+      POSTGRES_DB: ${DB_DATABASE:-controlla}
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    volumes:
+      - controlla_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-controlla} -d ${DB_DATABASE:-controlla}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  app:
+    build:
+      context: ..
+      dockerfile: infra/Dockerfile.backend
+      target: ${BUILD_TARGET:-dev}
+    container_name: controlla-app
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      TZ: UTC
+      NODE_ENV: ${NODE_ENV:-development}
+      HOST: 0.0.0.0
+      PORT: 3333
+      APP_KEY: ${APP_KEY}
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+      SESSION_DRIVER: cookie
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: ${DB_USER:-controlla}
+      DB_PASSWORD: ${DB_PASSWORD:-controlla}
+      DB_DATABASE: ${DB_DATABASE:-controlla}
+      LIMITER_STORE: database
+      APP_URL: ${APP_URL:-http://localhost:3333}
+      VITE_DEV_URL: ${VITE_DEV_URL:-http://localhost:3333}
+      SUPER_ADMIN_EMAIL: ${SUPER_ADMIN_EMAIL}
+      SUPER_ADMIN_PASSWORD: ${SUPER_ADMIN_PASSWORD}
+    ports:
+      - "${APP_PORT:-3333}:3333"
+    volumes:
+      - ../backend:/app/backend:Z
+      - ../frontend:/app/frontend:Z
+      - backend_node_modules:/app/backend/node_modules
+      - frontend_node_modules:/app/frontend/node_modules
+
+volumes:
+  controlla_pgdata:
+  backend_node_modules:
+  frontend_node_modules:

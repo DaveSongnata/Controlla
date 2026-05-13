@@ -1,0 +1,46 @@
+# syntax=docker/dockerfile:1.7
+
+# ----- deps (backend) -----
+FROM node:22-alpine AS backend-deps
+WORKDIR /app/backend
+COPY backend/package.json backend/package-lock.json ./
+RUN npm ci
+
+# ----- deps (frontend) -----
+FROM node:22-alpine AS frontend-deps
+WORKDIR /app/frontend
+COPY frontend/package.json frontend/package-lock.json ./
+RUN npm ci
+
+# ----- dev (single container; Vite runs in-process via @adonisjs/vite) -----
+FROM node:22-alpine AS dev
+WORKDIR /app/backend
+RUN apk add --no-cache bash
+COPY --from=backend-deps /app/backend/node_modules ./node_modules
+COPY --from=frontend-deps /app/frontend/node_modules /app/frontend/node_modules
+COPY backend/ ./
+COPY frontend/ /app/frontend/
+EXPOSE 3333
+CMD ["sh", "-c", "node ace migration:run --force || true && node ace db:seed || true && node ace serve --hmr"]
+
+# ----- build -----
+FROM node:22-alpine AS builder
+WORKDIR /app/frontend
+COPY --from=frontend-deps /app/frontend/node_modules ./node_modules
+COPY frontend/ ./
+WORKDIR /app/backend
+COPY --from=backend-deps /app/backend/node_modules ./node_modules
+COPY backend/ ./
+RUN node ace build
+
+# ----- runtime (prod) -----
+FROM node:22-alpine AS prod
+WORKDIR /app
+ENV NODE_ENV=production
+COPY backend/package.json backend/package-lock.json ./backend/
+RUN cd backend && npm ci --omit=dev
+COPY --from=builder /app/backend/build ./backend/
+COPY --from=builder /app/backend/public ./backend/public
+EXPOSE 3333
+WORKDIR /app/backend
+CMD ["sh", "-c", "node ace migration:run --force && node bin/server.js"]

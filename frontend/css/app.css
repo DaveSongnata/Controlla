@@ -1,0 +1,177 @@
+@import 'tailwindcss';
+@import '@fontsource/jetbrains-mono/index.css';
+
+@theme {
+  --color-bg: #ffffff;
+  --color-bg-alt: #f3f4f6;
+  --color-ink: #000000;
+
+  --color-debt: #dc2626;
+  --color-paid: #166534;
+  --color-action: #facc15;
+  --color-warn: #f59e0b;
+
+  --shadow-brutal: 4px 4px 0 0 #000;
+  --shadow-brutal-sm: 2px 2px 0 0 #000;
+  --shadow-brutal-lg: 6px 6px 0 0 #000;
+
+  --font-sans:
+    ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Space Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+@layer base {
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  html,
+  body {
+    height: 100%;
+    width: 100%;
+    background: var(--color-bg);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -webkit-tap-highlight-color: transparent;
+  }
+  input,
+  button,
+  textarea,
+  select {
+    font: inherit;
+  }
+  button,
+  [role='button'],
+  a.btn {
+    min-height: 3rem;
+  }
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+@layer components {
+  .brutal-card {
+    background: var(--color-bg);
+    border: 2px solid var(--color-ink);
+    box-shadow: var(--shadow-brutal);
+    padding: 1rem;
+  }
+  .brutal-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 3rem;
+    padding: 0.75rem 1.25rem;
+    background: var(--color-action);
+    color: var(--color-ink);
+    border: 2px solid var(--color-ink);
+    box-shadow: var(--shadow-brutal);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    transition:
+      transform 80ms linear,
+      box-shadow 80ms linear;
+  }
+  .brutal-btn:active {
+    transform: translate(2px, 2px);
+    box-shadow: var(--shadow-brutal-sm);
+  }
+  .brutal-btn[disabled] {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  .brutal-btn--danger {
+    background: var(--color-debt);
+    color: #fff;
+  }
+  .brutal-btn--paid {
+    background: var(--color-paid);
+    color: #fff;
+  }
+  .brutal-btn--ghost {
+    background: var(--color-bg);
+  }
+  .brutal-input {
+    display: block;
+    width: 100%;
+    min-height: 3rem;
+    padding: 0.75rem 1rem;
+    background: var(--color-bg);
+    border: 2px solid var(--color-ink);
+    outline: none;
+  }
+  .brutal-input:focus {
+    box-shadow: var(--shadow-brutal-sm);
+  }
+  .money {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    font-weight: 700;
+  }
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.125rem 0.5rem;
+    border: 2px solid var(--color-ink);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+  .pill--debt {
+    background: var(--color-debt);
+    color: #fff;
+  }
+  .pill--paid {
+    background: var(--color-paid);
+    color: #fff;
+  }
+  .pill--risk {
+    background: #dc2626; /* red-600 saturado, sem gradiente */
+    color: #fff;
+    font-weight: 900;
+    font-size: 10px;
+    padding: 0.25rem 0.5rem;
+    letter-spacing: 0.1em; /* tracking-widest */
+    animation: brutal-risk-pulse 2s ease-in-out infinite;
+  }
+  @keyframes brutal-risk-pulse {
+    0%,
+    100% {
+      box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.65);
+    }
+    50% {
+      box-shadow: 0 0 0 4px rgba(220, 38, 38, 0);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .pill--risk {
+      animation: none;
+    }
+  }
+  .fab {
+    position: fixed;
+    right: 1.25rem;
+    bottom: 1.25rem;
+    width: 4rem;
+    height: 4rem;
+    background: var(--color-action);
+    color: var(--color-ink);
+    border: 2px solid var(--color-ink);
+    box-shadow: var(--shadow-brutal-lg);
+    font-size: 2rem;
+    font-weight: 900;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .fab:active {
+    transform: translate(2px, 2px);
+    box-shadow: var(--shadow-brutal);
+  }
+}
