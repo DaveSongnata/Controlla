@@ -43,4 +43,4 @@ COPY --from=builder /app/backend/build ./backend/
 COPY --from=builder /app/backend/public ./backend/public
 EXPOSE 3333
 WORKDIR /app/backend
-CMD ["sh", "-c", "node ace migration:run --force && node bin/server.js"]
+CMD ["sh", "-c", "node ace migration:run --force && node ace db:seed && node bin/server.js"]
