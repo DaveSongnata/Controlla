@@ -10,6 +10,7 @@ export type AuditAction =
   | 'DELETE_PAGAMENTO'
   | 'CREATE_CLIENTE'
   | 'UPDATE_CLIENTE'
+  | 'CREATE_TENANT'
   | 'UPDATE_TENANT'
   | 'UPDATE_TENANT_STATUS'
 

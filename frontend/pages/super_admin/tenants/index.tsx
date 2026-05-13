@@ -41,12 +41,17 @@ export default function AdminTenantsIndex({ search, tenants }: Props) {
 
   return (
     <AdminLayout title="Lojas">
-      <BrutalInput
-        className="mb-3"
-        placeholder="Buscar loja..."
-        defaultValue={search}
-        onChange={(e) => onSearch(e.target.value)}
-      />
+      <div className="flex gap-2 mb-3">
+        <BrutalInput
+          className="flex-1"
+          placeholder="Buscar loja..."
+          defaultValue={search}
+          onChange={(e) => onSearch(e.target.value)}
+        />
+        <BrutalButton variant="paid" onClick={() => router.get('/admin/tenants/create')}>
+          + Nova Loja
+        </BrutalButton>
+      </div>
       {tenants.length === 0 ? (
         <BrutalCard className="bg-white text-sm">Nenhuma loja.</BrutalCard>
       ) : (

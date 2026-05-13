@@ -97,6 +97,8 @@ router
   .group(() => {
     router.get('/admin', [AdminMetricsController, 'index']).as('admin.dashboard')
     router.get('/admin/tenants', [AdminTenantsController, 'index']).as('admin.tenants.index')
+    router.get('/admin/tenants/create', [AdminTenantsController, 'create']).as('admin.tenants.create')
+    router.post('/admin/tenants', [AdminTenantsController, 'store']).as('admin.tenants.store')
     router
       .patch('/admin/tenants/:id/status', [AdminTenantsController, 'updateStatus'])
       .as('admin.tenants.updateStatus')
