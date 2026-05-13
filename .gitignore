@@ -1,0 +1,31 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+backend/build/
+backend/tmp/
+backend/public/assets/
+frontend/build/
+frontend/dist/
+
+# Env / Secrets — cobre raiz + qualquer subpasta
+.env
+.env.*
+!.env.example
+**/.env
+**/.env.*
+!**/.env.example
+
+# Logs
+*.log
+npm-debug.log
+yarn-error.log
+
+# Editors / IDE
+.fleet
+.idea
+.vscode
+
+# OS
+.DS_Store
+Thumbs.db
